@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { getDirectoryProcesses } from "../utils/Process";
+import catchAsync from "../utils/catchAsync";
 
-export const getAll = async (_: Request, res: Response) => {
+export const getAll = catchAsync(async (_: Request, res: Response) => {
   const targetDirectory = process.env.TARGET_DIRECTORY!;
   const processes = await getDirectoryProcesses(targetDirectory)
   
@@ -14,5 +15,5 @@ export const getAll = async (_: Request, res: Response) => {
   res.status(200).json({
     data: processes
   })
-}
+})
 
