@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getDirectoryProcesses } from "../utils/Process";
 
-export const getAll = async (req: Request, res: Response) => {
+export const getAll = async (_: Request, res: Response) => {
   const targetDirectory = process.env.TARGET_DIRECTORY!;
   const processes = await getDirectoryProcesses(targetDirectory)
   
