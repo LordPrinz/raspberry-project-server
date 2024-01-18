@@ -1,4 +1,5 @@
 import { exec } from 'child_process';
+import { AppInfo } from './Directory';
 
 export type processType = {
   pid: string;
@@ -38,3 +39,14 @@ export const getDirectoryProcesses = (targetDirectory: string): Promise<processT
     });
   });
 }
+
+export const findActiveApps = async (apps: AppInfo[], processes: processType[]) => {
+  const processCommands = processes.map(process => process.command).join(" ");
+
+  return apps.map(app => {
+    return {
+      ...app,
+      isActive: processCommands.includes(app.path)
+    }
+  })
+} 

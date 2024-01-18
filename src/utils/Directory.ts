@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-interface AppInfo {
+export type AppInfo = {
   app: string;
   path: string;
 }
