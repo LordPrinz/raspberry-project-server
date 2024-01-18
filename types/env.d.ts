@@ -1,6 +1,5 @@
 interface Env {
 	PORT: string;
-	UDP_PORT: string;
 }
 
 declare global {
