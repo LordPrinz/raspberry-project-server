@@ -8,22 +8,14 @@ export const getAll = catchAsync(async (_: Request, res: Response) => {
 
   const directoryApps = getDirectoryApps(targetDirectory);
   const processes = await getDirectoryProcesses(targetDirectory)
-
   const activeApps = await findActiveApps(directoryApps, processes);
 
   res.status(200).json({
     data: activeApps
   })
-
-  
-  // if(processes.length === 0) {
-  //   return res.status(204).json({
-  //     data: null
-  //   })
-  // }
-
-  // res.status(200).json({
-  //   data: processes
-  // })
 })
 
+
+export const getOne = catchAsync(async () => {})
+export const terminateProcess = catchAsync(async () => {})
+export const startProcess = catchAsync(async () => {})
