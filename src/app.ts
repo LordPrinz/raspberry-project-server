@@ -4,12 +4,11 @@ import AppError from "./utils/AppError";
 
 const app = express();
 
-
 app.use(json());
 
-app.use("/api/v1/apps", () => appRouter);
+app.use("/api/v1/apps", appRouter);
 
-app.all("*", async (req, res, next) => {
+app.all("*", async (req) => {
 	new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
 });
 

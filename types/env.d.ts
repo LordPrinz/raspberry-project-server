@@ -1,5 +1,6 @@
 interface Env {
 	PORT: string;
+  TARGET_DIRECTORY: string
 }
 
 declare global {

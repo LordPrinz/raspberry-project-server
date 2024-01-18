@@ -1,7 +1,8 @@
 import { Router } from "express";
+import { getAll } from "../controllers/appController";
 
 const router = Router();
 
-router.route("/").get(() => console.log("XD"));
+router.route("/").get(getAll);
 
 export default router
