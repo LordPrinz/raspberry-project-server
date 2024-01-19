@@ -5,6 +5,6 @@ const router = Router();
 
 router.route("/").get(getAll);
 
-router.route("/:id").get(getOne).post(startProcess).delete(terminateProcess);
+router.route("/:appName").get(getOne).post(startProcess).delete(terminateProcess);
 
 export default router

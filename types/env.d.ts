@@ -1,6 +1,7 @@
 interface Env {
 	PORT: string;
-  TARGET_DIRECTORY: string
+  TARGET_DIRECTORY: string;
+	TAG: string
 }
 
 declare global {

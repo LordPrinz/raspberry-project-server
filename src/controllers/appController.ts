@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { findActiveApps, getDirectoryProcesses } from "../utils/Process";
+import { findActiveApps, findAppData, getDirectoryProcesses } from "../utils/Process";
 import catchAsync from "../utils/catchAsync";
 import { getDirectoryApps } from "../utils/Directory";
 
@@ -16,6 +16,16 @@ export const getAll = catchAsync(async (_: Request, res: Response) => {
 })
 
 
-export const getOne = catchAsync(async () => {})
-export const terminateProcess = catchAsync(async () => {})
-export const startProcess = catchAsync(async () => {})
+export const getOne = catchAsync(async (req: Request, res: Response) => {
+
+  const {appName} = req.params
+
+  const appData = await findAppData(appName)
+
+  res.status(200).json({
+    data: appData
+  })
+
+})
+export const terminateProcess = catchAsync(async (req: Request, res: Response) => {})
+export const startProcess = catchAsync(async (req: Request, res: Response) => {})
