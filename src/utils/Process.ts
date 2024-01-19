@@ -115,3 +115,7 @@ export const findAppData = async (appName: string) => {
     pids: activeAppData.map(app => app.pid)
   }
 }
+
+export const terminateProcess = (pid: string) => {
+
+}
