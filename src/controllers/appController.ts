@@ -44,12 +44,19 @@ export const terminateProcess = catchAsync(async (req: Request, res: Response) =
       data: "Process is not running"
     })
   }
+  let terminatedTasks = 0;
 
-  // pids.forEach(pid => {
-  //   console.log( terminate(pid));
-  // })
+  for (const pid of pids) {
+    const result = await terminate(pid);
+    
+    if (result === 0) {
+      terminatedTasks++;
+    }
+  }
   
-  console.log(await terminate(pids[0]))
+  res.status(200).json({
+    data: `${terminatedTasks} task${terminatedTasks > 1 ? "s" : ""} terminated.`,
+  });
 
 })
 export const startProcess = catchAsync(async (req: Request, res: Response) => {

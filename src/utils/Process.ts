@@ -115,7 +115,7 @@ export const findAppData = async (appName: string) => {
 }
 
 
-export const terminateProcess = async (pid: string): Promise<void> => {
+export const terminateProcess = async (pid: string): Promise<number> => {
   try {
     const childPids = await new Promise<string>((resolve, reject) => {
       exec(`pgrep -P ${pid}`, (error, stdout) => {
@@ -130,32 +130,34 @@ export const terminateProcess = async (pid: string): Promise<void> => {
     const childPidArray = childPids.split('\n').filter(Boolean);
 
     await Promise.all([
-      new Promise<void>((resolve, reject) => {
+      new Promise<number>((resolve, reject) => {
         exec(`kill -9 ${pid}`, (error) => {
           if (error) {
             console.error(`Error killing process ${pid}: ${error.message}`);
             reject(error);
           } else {
-            resolve();
+            resolve(0); // Resolve with exit code 0 for success
           }
         });
       }),
       ...childPidArray.map(childPid =>
-        new Promise<void>((resolve, reject) => {
+        new Promise<number>((resolve, reject) => {
           exec(`kill -9 ${childPid}`, (error) => {
             if (error) {
               console.error(`Error killing child process ${childPid}: ${error.message}`);
               reject(error);
             } else {
-              resolve();
+              resolve(0); // Resolve with exit code 0 for success
             }
           });
         })
       ),
     ]);
 
+    return 0; // Return exit code 0 for success
+
   } catch (error: any) {
     console.error(`Error terminating process: ${error.message}`);
-    throw error;
+    return 1; // Return exit code 1 for failure
   }
 };
