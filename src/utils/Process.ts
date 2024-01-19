@@ -3,12 +3,15 @@ import { AppInfo } from './Directory';
 
 export type processType = {
   pid: string;
-  command: string
+  app: string
 }
 
-export const getDirectoryProcesses = (targetDirectory: string): Promise<processType[]> => {
+export const getDirectoryProcesses = (): Promise<processType[]> => {
   return new Promise((resolve, reject) => {
-    exec('ps aux', (error, stdout, stderr) => {
+    exec("ps auxww | grep -E '/projects|__project__'", (error, stdout, stderr) => {
+
+      const processes = stdout.split('\n').slice(0, -3);
+      
       if (error) {
         console.error(`Error executing command: ${error.message}`);
         reject(error);
@@ -21,19 +24,17 @@ export const getDirectoryProcesses = (targetDirectory: string): Promise<processT
         return;
       }
 
-      const processes = stdout.split('\n').map(line => line.split(/\s+/));
+      const result = processes.map(process => {
+        const fragment = process.split(" ").filter(el => el !== "");
 
-      const filteredProcesses = processes.filter(processInfo => {
-        const command = processInfo.slice(2).join(' ');
-        return command.includes(targetDirectory);
-      });
+        const pid = fragment[1];
+        const app = fragment[fragment.length - 1].replace(/_/g, "").replace(/"/g, "");
 
-      const result = filteredProcesses.map(processInfo => {
         return {
-          pid: processInfo[1],
-          command: processInfo.slice(10).join(' ')
-        };
-      });
+          pid,
+          app
+        }
+      })
 
       resolve(result);
     });
@@ -41,12 +42,12 @@ export const getDirectoryProcesses = (targetDirectory: string): Promise<processT
 }
 
 export const findActiveApps = async (apps: AppInfo[], processes: processType[]) => {
-  const processCommands = processes.map(process => process.command).join(" ");
+  const processCommands = processes.map(process => process.app).join(" ");
 
   return apps.map(app => {
     return {
       ...app,
-      isActive: processCommands.includes(app.path)
+      isActive: processCommands.includes(app.name)
     }
   })
 } 

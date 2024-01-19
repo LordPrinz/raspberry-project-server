@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 export type AppInfo = {
-  app: string;
+  name: string;
   path: string;
 }
 
@@ -10,7 +10,7 @@ const findStartScript = (dir: string): AppInfo | null => {
   const files = fs.readdirSync(dir);
 
   if (files.includes('start.sh')) {
-    return { app: path.basename(dir), path: dir };
+    return { name: path.basename(dir), path: dir };
   }
 
   for (const file of files) {

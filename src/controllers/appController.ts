@@ -7,7 +7,7 @@ export const getAll = catchAsync(async (_: Request, res: Response) => {
   const targetDirectory = process.env.TARGET_DIRECTORY!;
 
   const directoryApps = getDirectoryApps(targetDirectory);
-  const processes = await getDirectoryProcesses(targetDirectory)
+  const processes = await getDirectoryProcesses()
   const activeApps = await findActiveApps(directoryApps, processes);
 
   res.status(200).json({
