@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { findActiveApps, findAppData, getDirectoryProcesses, terminateProcess as terminate } from "../utils/Process";
+import { findActiveApps, findAppData, getDirectoryProcesses, runProcess, terminateProcess as terminate } from "../utils/Process";
 import catchAsync from "../utils/catchAsync";
 import { getDirectoryApps } from "../utils/Directory";
 
@@ -34,7 +34,7 @@ export const terminateProcess = catchAsync(async (req: Request, res: Response) =
   const appData = await findAppData(appName)
   
   if(!appData) {
-    return res.status(404).json({ error: 'App not found' });
+    return res.status(404).json({ data: 'App not found' });
   }
 
   const {pids} = appData
@@ -61,6 +61,18 @@ export const terminateProcess = catchAsync(async (req: Request, res: Response) =
 })
 export const startProcess = catchAsync(async (req: Request, res: Response) => {
 
+  const {appName} = req.params
 
+  const appData = await findAppData(appName)
   
+  if(!appData) {
+    return res.status(404).json({ data: 'App not found' });
+  }
+  try {
+    await runProcess(appData.path, appName);
+    res.status(200).json({ data: 'Process started successfully.' });
+  } catch (error) {
+    console.error(`Error starting process: ${error}`);
+    res.status(500).json({ data: 'Internal server error' });
+  }
 })

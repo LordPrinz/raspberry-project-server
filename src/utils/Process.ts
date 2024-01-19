@@ -136,7 +136,7 @@ export const terminateProcess = async (pid: string): Promise<number> => {
             console.error(`Error killing process ${pid}: ${error.message}`);
             reject(error);
           } else {
-            resolve(0); // Resolve with exit code 0 for success
+            resolve(0);
           }
         });
       }),
@@ -147,17 +147,39 @@ export const terminateProcess = async (pid: string): Promise<number> => {
               console.error(`Error killing child process ${childPid}: ${error.message}`);
               reject(error);
             } else {
-              resolve(0); // Resolve with exit code 0 for success
+              resolve(0); 
             }
           });
         })
       ),
     ]);
 
-    return 0; // Return exit code 0 for success
+    return 0;
 
   } catch (error: any) {
     console.error(`Error terminating process: ${error.message}`);
-    return 1; // Return exit code 1 for failure
+    return 1; 
   }
+};
+
+export const runProcess = async (runPath: string, appName: string): Promise<string> => {
+  const tag = process.env.TAG!
+
+  return new Promise((resolve, reject) => {
+    exec(`cd ${runPath} && nohup ./start.sh __${tag}__ __${appName}__ > output.log 2>&1 &`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error executing command: ${error.message}`);
+        reject(error.message);
+        return;
+      }
+
+      if (stderr) {
+        console.error(`Command stderr: ${stderr}`);
+        reject(stderr);
+        return;
+      }
+
+      resolve(stdout);
+    });
+  });
 };
