@@ -6,8 +6,6 @@ export type processType = {
   app: string
 }
 
-
-
 export const getDirectoryProcesses = (): Promise<processType[]> => {
   const targetDirectory = process.env.TARGET_DIRECTORY!
   const tag = process.env.TAG!
@@ -116,6 +114,48 @@ export const findAppData = async (appName: string) => {
   }
 }
 
-export const terminateProcess = (pid: string) => {
 
-}
+export const terminateProcess = async (pid: string): Promise<void> => {
+  try {
+    const childPids = await new Promise<string>((resolve, reject) => {
+      exec(`pgrep -P ${pid}`, (error, stdout) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(stdout.trim());
+      });
+    });
+
+    const childPidArray = childPids.split('\n').filter(Boolean);
+
+    await Promise.all([
+      new Promise<void>((resolve, reject) => {
+        exec(`kill -9 ${pid}`, (error) => {
+          if (error) {
+            console.error(`Error killing process ${pid}: ${error.message}`);
+            reject(error);
+          } else {
+            resolve();
+          }
+        });
+      }),
+      ...childPidArray.map(childPid =>
+        new Promise<void>((resolve, reject) => {
+          exec(`kill -9 ${childPid}`, (error) => {
+            if (error) {
+              console.error(`Error killing child process ${childPid}: ${error.message}`);
+              reject(error);
+            } else {
+              resolve();
+            }
+          });
+        })
+      ),
+    ]);
+
+  } catch (error: any) {
+    console.error(`Error terminating process: ${error.message}`);
+    throw error;
+  }
+};

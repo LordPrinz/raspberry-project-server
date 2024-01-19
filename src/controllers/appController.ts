@@ -45,10 +45,11 @@ export const terminateProcess = catchAsync(async (req: Request, res: Response) =
     })
   }
 
-  pids.forEach(pid => {
-    terminate(pid);
-  })
+  // pids.forEach(pid => {
+  //   console.log( terminate(pid));
+  // })
   
+  console.log(await terminate(pids[0]))
 
 })
 export const startProcess = catchAsync(async (req: Request, res: Response) => {
